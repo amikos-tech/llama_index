@@ -124,14 +124,14 @@ _TEXT_MODE_MODEL_DICT = {
 def get_embedding(client: OpenAI, text: str, engine: str, **kwargs: Any) -> List[float]:
     """Get embedding.
 
-    NOTE: Copied from OpenAI's embedding utils:
-    https://github.com/openai/openai-python/blob/main/openai/embeddings_utils.py
+    NOTE: New line removal is only necessary for non-code engines of gen 001.
+    See https://github.com/openai/openai-python/issues/418 for more details.
 
-    Copied here to avoid importing unnecessary dependencies
-    like matplotlib, plotly, scipy, sklearn.
+
 
     """
-    text = text.replace("\n", " ")
+    if engine.endswith("001"):
+        text = text.replace("\n", " ")
 
     return (
         client.embeddings.create(input=[text], model=engine, **kwargs).data[0].embedding
@@ -144,14 +144,12 @@ async def aget_embedding(
 ) -> List[float]:
     """Asynchronously get embedding.
 
-    NOTE: Copied from OpenAI's embedding utils:
-    https://github.com/openai/openai-python/blob/main/openai/embeddings_utils.py
-
-    Copied here to avoid importing unnecessary dependencies
-    like matplotlib, plotly, scipy, sklearn.
+    NOTE: New line removal is only necessary for non-code engines of gen 001.
+    See https://github.com/openai/openai-python/issues/418 for more details.
 
     """
-    text = text.replace("\n", " ")
+    if engine.endswith("001"):
+        text = text.replace("\n", " ")
 
     return (
         (await aclient.embeddings.create(input=[text], model=engine, **kwargs))
@@ -166,16 +164,14 @@ def get_embeddings(
 ) -> List[List[float]]:
     """Get embeddings.
 
-    NOTE: Copied from OpenAI's embedding utils:
-    https://github.com/openai/openai-python/blob/main/openai/embeddings_utils.py
-
-    Copied here to avoid importing unnecessary dependencies
-    like matplotlib, plotly, scipy, sklearn.
+    NOTE: New line removal is only necessary for non-code engines of gen 001.
+    See https://github.com/openai/openai-python/issues/418 for more details.
 
     """
     assert len(list_of_text) <= 2048, "The batch size should not be larger than 2048."
 
-    list_of_text = [text.replace("\n", " ") for text in list_of_text]
+    if engine.endswith("001"):
+        list_of_text = [text.replace("\n", " ") for text in list_of_text]
 
     data = client.embeddings.create(input=list_of_text, model=engine, **kwargs).data
     return [d.embedding for d in data]
@@ -190,16 +186,14 @@ async def aget_embeddings(
 ) -> List[List[float]]:
     """Asynchronously get embeddings.
 
-    NOTE: Copied from OpenAI's embedding utils:
-    https://github.com/openai/openai-python/blob/main/openai/embeddings_utils.py
-
-    Copied here to avoid importing unnecessary dependencies
-    like matplotlib, plotly, scipy, sklearn.
+    NOTE: New line removal is only necessary for non-code engines of gen 001.
+    See https://github.com/openai/openai-python/issues/418 for more details.
 
     """
     assert len(list_of_text) <= 2048, "The batch size should not be larger than 2048."
 
-    list_of_text = [text.replace("\n", " ") for text in list_of_text]
+    if engine.endswith("001"):
+        list_of_text = [text.replace("\n", " ") for text in list_of_text]
 
     data = (
         await aclient.embeddings.create(input=list_of_text, model=engine, **kwargs)
